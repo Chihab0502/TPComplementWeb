@@ -1,4 +1,4 @@
-# heroesandvilains
+# my-vue-2-project
 
 ## Project setup
 ```

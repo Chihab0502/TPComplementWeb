@@ -1,32 +1,50 @@
 <template>
-  <div id="app">
-    <nav>
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </nav>
-    <router-view/>
-  </div>
+  <MainLayout>
+    <router-view></router-view>
+    <v-snackbar
+      v-model="snackbar.show"
+      :color="snackbar.color"
+      :timeout="snackbar.timeout"
+      :bottom="true"
+      :right="true"
+    >
+      {{ snackbar.text }}
+
+      <template v-slot:action="{ attrs }">
+        <v-btn color="white" text v-bind="attrs" @click="snackbar.show = false">
+          Close
+        </v-btn>
+      </template>
+    </v-snackbar>
+  </MainLayout>
 </template>
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
-
-nav {
-  padding: 30px;
-}
-
-nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
-
-nav a.router-link-exact-active {
-  color: #42b983;
-}
-</style>
+<script>
+import MainLayout from "./layouts/MainLayout.vue";
+import { eventBus } from "./utilits/eventBus";
+export default {
+  components: {
+    MainLayout,
+  },
+  data: () => ({
+    drawer: false,
+    snackbar: {
+      show: false,
+      text: '',
+      color: 'error',
+      timeout: 6000,
+    },
+  }),
+  methods: {
+    goToAuth() {
+      this.$router.push("/auth");
+    },
+  },
+  created() {
+    eventBus.$on('show-snackbar', (text) => {
+      this.snackbar.text = text;
+      this.snackbar.show = true;
+    });
+  },
+};
+</script>
